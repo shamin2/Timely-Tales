@@ -1,0 +1,20 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+# Virtual environments
+venv/
+.venv/
+
+# Python bytecode
+__pycache__/
+
+# JetBrains IDE settings (PyCharm)
+.idea/
+
+# Flask environment variables
+instance/
+.env
+
+# Logs and database files (if applicable)
+*.log
