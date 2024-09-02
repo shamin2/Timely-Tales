@@ -1,8 +1,7 @@
-// DiaryListScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import { getEntries } from '../services/apiService';  // Importing the API function
 import EntryCard from '../components/EntryCard';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -14,8 +13,8 @@ const DiaryListScreen = () => {
   useEffect(() => {
     const fetchEntries = async () => {
       try {
-        const response = await axios.get('http://your-backend-url.com/api/diary');
-        setEntries(response.data);
+        const data = await getEntries();  // Using the API service function to get entries
+        setEntries(data);
       } catch (error) {
         console.error('Error fetching entries:', error);
       }

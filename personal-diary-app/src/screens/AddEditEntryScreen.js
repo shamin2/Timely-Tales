@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import axios from 'axios';
+import { FontAwesome } from '@expo/vector-icons';
+import { createEntry, updateEntry } from '../services/apiService'; // Import your API service functions
 
 const AddEditEntryScreen = () => {
   const [title, setTitle] = useState('');
@@ -33,13 +33,14 @@ const AddEditEntryScreen = () => {
 
     try {
       if (existingEntry) {
-        await axios.put(`http://your-backend-url.com/api/diary/${existingEntry.id}`, entryData);
+        await updateEntry(existingEntry.id, entryData);
       } else {
-        await axios.post('http://your-backend-url.com/api/diary', entryData);
+        await createEntry(entryData);
       }
       navigation.navigate('DiaryList');
     } catch (error) {
       console.error('Error saving entry:', error);
+      alert('Failed to save the entry. Please try again.');
     }
   };
 

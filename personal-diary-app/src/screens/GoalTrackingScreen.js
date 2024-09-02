@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import GoalProgressBar from '../components/GoalProgressBar'; // Your existing component
+import GoalProgressBar from '../components/GoalProgressBar';
+import { getGoals } from '../services/apiService'; // Importing your API service
 
-const GoalTrackingScreen = ({ goals }) => {
+const GoalTrackingScreen = () => {
+  const [goals, setGoals] = useState([]);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchGoals = async () => {
+      try {
+        const data = await getGoals(); // Fetching goals from the backend
+        setGoals(data);
+      } catch (error) {
+        console.error('Error fetching goals:', error);
+      }
+    };
+
+    fetchGoals();
+  }, []);
 
   const renderGoalItem = ({ item }) => (
     <TouchableOpacity
@@ -12,7 +27,7 @@ const GoalTrackingScreen = ({ goals }) => {
       onPress={() => navigation.navigate('GoalDetail', { goal: item })}
     >
       <Text style={styles.goalTitle}>{item.title}</Text>
-      <GoalProgressBar progress={item.progress} /> {/* Reusing your existing component */}
+      <GoalProgressBar progress={item.progress} />
     </TouchableOpacity>
   );
 
@@ -26,30 +41,5 @@ const GoalTrackingScreen = ({ goals }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f9f9f9',
-  },
-  goalItem: {
-    padding: 15,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  goalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
-  },
-});
 
 export default GoalTrackingScreen;

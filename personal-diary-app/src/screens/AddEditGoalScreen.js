@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { createGoal, updateGoal } from '../services/apiService'; // Import your API functions
 
 const AddEditGoalScreen = ({ route, navigation }) => {
   const { goal } = route.params || {};
@@ -14,7 +15,7 @@ const AddEditGoalScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleSaveGoal = () => {
+  const handleSaveGoal = async () => {
     if (title.trim()) {
       const updatedGoal = {
         id: goal ? goal.id : Date.now().toString(),
@@ -22,9 +23,20 @@ const AddEditGoalScreen = ({ route, navigation }) => {
         milestones,
         progress: (milestones.filter(m => m.completed).length / milestones.length) * 100 || 0,
       };
-      // Save goal to state or backend here
-      Alert.alert('Goal Saved', 'Your goal has been saved successfully!');
-      navigation.goBack();
+
+      try {
+        if (goal) {
+          // Update existing goal
+          await updateGoal(goal.id, updatedGoal);
+        } else {
+          // Create a new goal
+          await createGoal(updatedGoal);
+        }
+        Alert.alert('Success', 'Your goal has been saved successfully!');
+        navigation.goBack();
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save the goal. Please try again.');
+      }
     } else {
       Alert.alert('Error', 'Please enter a goal title.');
     }

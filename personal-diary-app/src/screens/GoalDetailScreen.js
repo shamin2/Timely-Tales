@@ -1,16 +1,56 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import GoalProgressBar from '../components/GoalProgressBar'; // Your existing component
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import GoalProgressBar from '../components/GoalProgressBar';
+import { getGoalById, updateGoal } from '../services/apiService'; // Importing your API service
 
 const GoalDetailScreen = ({ route, navigation }) => {
-  const { goal } = route.params;
+  const { goalId } = route.params; // Assuming you pass the goal ID from the previous screen
+  const [goal, setGoal] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGoal = async () => {
+      try {
+        const fetchedGoal = await getGoalById(goalId); // Fetching goal details from the backend
+        setGoal(fetchedGoal);
+      } catch (error) {
+        console.error('Error fetching goal:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGoal();
+  }, [goalId]);
+
+  const handleMilestoneToggle = (milestoneId) => {
+    const updatedMilestones = goal.milestones.map((milestone) =>
+      milestone.id === milestoneId ? { ...milestone, completed: !milestone.completed } : milestone
+    );
+    setGoal({ ...goal, milestones: updatedMilestones });
+
+    // Update the goal on the backend
+    updateGoal(goal.id, { milestones: updatedMilestones }).catch((error) => {
+      console.error('Error updating goal:', error);
+    });
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6200ee" />
+      </View>
+    );
+  }
 
   const renderMilestoneItem = ({ item }) => (
-    <View style={styles.milestoneItem}>
-      <Text style={[styles.milestoneText, item.completed && styles.completedMilestone]}>
-        {item.name}
-      </Text>
-    </View>
+    <TouchableOpacity onPress={() => handleMilestoneToggle(item.id)}>
+      <View style={styles.milestoneItem}>
+        <Text style={[styles.milestoneText, item.completed && styles.completedMilestone]}>
+          {item.name}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -73,6 +113,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

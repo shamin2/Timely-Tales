@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { loginUser } from '../services/apiService';  // Importing the API service function
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -11,14 +11,11 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://your-backend-url.com/api/login', {
-        email,
-        password,
-      });
+      const response = await loginUser(email, password);  // Using the API service function for login
 
-      if (response.data.token) {
+      if (response.token) {
         // Save the token in secure storage or AsyncStorage
-        // For example: AsyncStorage.setItem('token', response.data.token);
+        // For example: AsyncStorage.setItem('token', response.token);
         navigation.navigate('Home'); // Redirect to the home screen
       }
     } catch (err) {

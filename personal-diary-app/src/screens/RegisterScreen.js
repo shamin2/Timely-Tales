@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { registerUser } from '../services/apiService';  // Importing the API service function
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -17,12 +17,9 @@ const RegisterScreen = () => {
     }
 
     try {
-      const response = await axios.post('http://your-backend-url.com/api/register', {
-        email,
-        password,
-      });
+      const response = await registerUser(email, password);  // Using the API service function for registration
 
-      if (response.data.success) {
+      if (response.success) {
         navigation.navigate('Login'); // Redirect to login screen after successful registration
       }
     } catch (err) {

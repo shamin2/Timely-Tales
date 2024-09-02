@@ -1,23 +1,55 @@
 // GratitudeScreen.js
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Alert, ActivityIndicator } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { getGratitudeEntries, createGratitudeEntry } from '../services/apiService'; // Importing API functions
 
 const GratitudeScreen = () => {
   const [gratitudeEntries, setGratitudeEntries] = useState([]);
   const [newEntry, setNewEntry] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleAddEntry = () => {
-    if (newEntry.trim()) {
-      const entry = {
-        id: Math.random().toString(),
-        content: newEntry,
-        date: new Date(),
-      };
-      setGratitudeEntries([entry, ...gratitudeEntries]);
-      setNewEntry('');
+  useEffect(() => {
+    fetchGratitudeEntries();
+  }, []);
+
+  const fetchGratitudeEntries = async () => {
+    setLoading(true);
+    try {
+      const data = await getGratitudeEntries(); // Fetching entries from the backend
+      setGratitudeEntries(data);
+    } catch (error) {
+      console.error('Error fetching gratitude entries:', error);
+      Alert.alert('Error', 'Failed to load gratitude entries. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleAddEntry = async () => {
+    if (newEntry.trim()) {
+      const entry = {
+        content: newEntry,
+        date: new Date().toISOString(), // Store date as ISO string
+      };
+      try {
+        const createdEntry = await createGratitudeEntry(entry); // Save the new entry to the backend
+        setGratitudeEntries([createdEntry, ...gratitudeEntries]);
+        setNewEntry('');
+      } catch (error) {
+        console.error('Error adding gratitude entry:', error);
+        Alert.alert('Error', 'Failed to add gratitude entry. Please try again.');
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#6200ee" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -39,7 +71,7 @@ const GratitudeScreen = () => {
         renderItem={({ item }) => (
           <View style={styles.entryCard}>
             <Text style={styles.entryContent}>{item.content}</Text>
-            <Text style={styles.entryDate}>{item.date.toDateString()}</Text>
+            <Text style={styles.entryDate}>{new Date(item.date).toDateString()}</Text>
           </View>
         )}
         ListEmptyComponent={() => (
@@ -111,6 +143,11 @@ const styles = StyleSheet.create({
     color: '#aaa',
     fontSize: 16,
     marginTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

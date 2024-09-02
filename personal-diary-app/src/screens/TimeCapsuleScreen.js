@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, DatePickerAndroid } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, DatePickerAndroid, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { createTimeCapsule, getTimeCapsule } from '../services/apiService'; // Import your API functions
 
 const TimeCapsuleScreen = () => {
   const [message, setMessage] = useState('');
   const [revealDate, setRevealDate] = useState(new Date());
   const [isLocked, setIsLocked] = useState(false);
   const [lockedMessage, setLockedMessage] = useState(null);
+
+  useEffect(() => {
+    if (isLocked) {
+      fetchLockedMessage();
+    }
+  }, [isLocked]);
 
   const handlePickDate = async () => {
     try {
@@ -22,10 +29,26 @@ const TimeCapsuleScreen = () => {
     }
   };
 
-  const handleLockMessage = () => {
+  const handleLockMessage = async () => {
     if (message.trim()) {
-      setLockedMessage({ message, revealDate });
-      setIsLocked(true);
+      try {
+        await createTimeCapsule({ message, revealDate });
+        setIsLocked(true);
+        Alert.alert('Success', 'Your message has been locked in the time capsule!');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to lock the message. Please try again.');
+      }
+    }
+  };
+
+  const fetchLockedMessage = async () => {
+    try {
+      const capsule = await getTimeCapsule(revealDate);
+      if (capsule) {
+        setLockedMessage(capsule);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to retrieve the time capsule. Please try again.');
     }
   };
 
@@ -39,7 +62,7 @@ const TimeCapsuleScreen = () => {
           <Text style={styles.lockedText}>Days Remaining: {timeLeft}</Text>
         </View>
       );
-    } else if (isLocked && revealDate <= today) {
+    } else if (isLocked && revealDate <= today && lockedMessage) {
       return (
         <View style={styles.revealedContainer}>
           <Text style={styles.revealedText}>{lockedMessage.message}</Text>

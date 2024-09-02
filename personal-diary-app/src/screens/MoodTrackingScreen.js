@@ -2,24 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import MoodTrackingChart from '../components/MoodTrackingChart'; // Import the chart component
-
-const moodData = [
-  { id: '1', date: '2024-08-20', mood: '😊', moodLabel: 'Happy', notes: 'Great day with friends', moodIndex: 4 },
-  { id: '2', date: '2024-08-21', mood: '😟', moodLabel: 'Anxious', notes: 'Work pressure', moodIndex: 2 },
-  { id: '3', date: '2024-08-22', mood: '😐', moodLabel: 'Neutral', notes: 'Routine day', moodIndex: 3 },
-  { id: '4', date: '2024-08-23', mood: '😊', moodLabel: 'Happy', notes: 'Exciting project at work', moodIndex: 4 },
-  { id: '5', date: '2024-08-24', mood: '😔', moodLabel: 'Sad', notes: 'Feeling low, need rest', moodIndex: 1 },
-];
+import { getMoods, createMood } from '../services/apiService'; // Importing API functions
 
 const MoodTrackingScreen = () => {
-  const [moods, setMoods] = useState(moodData);
+  const [moods, setMoods] = useState([]);
   const [selectedMood, setSelectedMood] = useState('');
   const [notes, setNotes] = useState('');
   const [insights, setInsights] = useState({});
 
   useEffect(() => {
+    fetchMoods();
+  }, []);
+
+  useEffect(() => {
     calculateInsights();
   }, [moods]);
+
+  const fetchMoods = async () => {
+    try {
+      const data = await getMoods(); // Fetching moods from the backend
+      setMoods(data);
+    } catch (error) {
+      console.error('Error fetching moods:', error);
+    }
+  };
+
+  const handleAddMood = async () => {
+    if (selectedMood) {
+      const newMood = {
+        mood: selectedMood,
+        note: notes,
+        moodIndex: getMoodIndex(selectedMood),
+      };
+
+      try {
+        const createdMood = await createMood(newMood); // Saving mood to the backend
+        setMoods([createdMood, ...moods]); // Updating the local state
+        setSelectedMood('');
+        setNotes('');
+      } catch (error) {
+        console.error('Error adding mood:', error);
+      }
+    }
+  };
 
   const calculateInsights = () => {
     if (moods.length === 0) return;
@@ -48,22 +73,6 @@ const MoodTrackingScreen = () => {
       bestDay: bestDay.date,
       worstDay: worstDay.date,
     });
-  };
-
-  const handleAddMood = () => {
-    if (selectedMood) {
-      const newMood = {
-        id: Math.random().toString(),
-        date: new Date().toISOString().split('T')[0],
-        mood: selectedMood,
-        moodLabel: getMoodLabel(selectedMood),
-        notes,
-        moodIndex: getMoodIndex(selectedMood),
-      };
-      setMoods([newMood, ...moods]);
-      setSelectedMood('');
-      setNotes('');
-    }
   };
 
   const getMoodLabel = (mood) => {
