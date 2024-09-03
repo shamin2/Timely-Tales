@@ -2,26 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { lightTheme, darkTheme } from './styles/theme'; // Import the themes
-import { ThemeProvider } from 'styled-components/native'; // Use a theme provider for styled-components
+import { lightTheme, darkTheme } from './src/styles/theme'; // Adjust the path for the themes
+import { ThemeProvider } from 'styled-components/native'; // Make sure styled-components is installed
 
-// Import all screens
-import OnBoardingScreen from './screens/OnBoardingScreen';
-import DiaryListScreen from './screens/DiaryListScreen';
-import GoalTrackingScreen from './screens/GoalTrackingScreen';
-import TaskTrackerScreen from './screens/TaskTrackerScreen';
-import HabitTrackerScreen from './screens/HabitTrackerScreen';
-import AddEditEntryScreen from './screens/AddEditEntryScreen';
-import AddCourseScreen from './screens/AddCourseScreen';
-import GratitudeScreen from './screens/GratitudeScreen';
-import AddEditGoalScreen from './screens/AddEditGoalScreen';
-import GoalDetailScreen from './screens/GoalDetailScreen';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import TimeCapsuleScreen from './screens/TimeCapsuleScreen';
-import TimeLineScreen from './screens/TimeLineScreen';
-import MoodTrackingScreen from './screens/MoodTrackingScreen';
-import SettingsScreen from './screens/SettingsScreen'; // Import the Settings screen
+// Import all screens from src/screens
+import OnBoardingScreen from './src/screens/OnboardingScreen';
+import DiaryListScreen from './src/screens/DiaryListScreen';
+import GoalTrackingScreen from './src/screens/GoalTrackingScreen';
+import TaskTrackerScreen from './src/screens/TaskTrackerScreen';
+import HabitTrackerScreen from './src/screens/HabitTrackerScreen';
+import AddEditEntryScreen from './src/screens/AddEditEntryScreen';
+import AddCourseScreen from './src/screens/AddCourseScreen';
+import GratitudeScreen from './src/screens/GratitudeScreen';
+import AddEditGoalScreen from './src/screens/AddEditGoalScreen';
+import GoalDetailScreen from './src/screens/GoalDetailScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
+import TimeCapsuleScreen from './src/screens/TimeCapsuleScreen';
+import TimeLineScreen from './src/screens/TimeLineScreen';
+import MoodTrackingScreen from './src/screens/MoodTrackingScreen';
+import SettingsScreen from './src/screens/SettingsScreen'; // Adjust path for Settings screen
 
 const Stack = createStackNavigator();
 
