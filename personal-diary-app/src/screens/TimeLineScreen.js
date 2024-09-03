@@ -1,21 +1,23 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { format } from 'date-fns';
-
-const mockTimelineData = [
-  { id: '1', date: new Date(2024, 7, 15), event: 'Started a new course: Web Development' },
-  { id: '2', date: new Date(2024, 8, 10), event: 'Vacation to the mountains' },
-  { id: '3', date: new Date(2024, 9, 5), event: 'Completed my first React Native project' },
-];
+import { getTimelineEvents } from '../services/apiService'; // Import your API function
 
 const TimeLineScreen = () => {
   const [timelineData, setTimelineData] = useState([]);
 
   useEffect(() => {
-    // Load or fetch timeline data (mock data for now)
-    setTimelineData(mockTimelineData);
+    const fetchTimelineData = async () => {
+      try {
+        const data = await getTimelineEvents();
+        setTimelineData(data);
+      } catch (error) {
+        console.error('Failed to fetch timeline data:', error);
+      }
+    };
+
+    fetchTimelineData();
   }, []);
 
   const renderTimelineItem = ({ item }) => (
@@ -25,7 +27,7 @@ const TimeLineScreen = () => {
         <View style={styles.line} />
       </View>
       <View style={styles.eventContainer}>
-        <Text style={styles.eventDate}>{format(item.date, 'MMMM d, yyyy')}</Text>
+        <Text style={styles.eventDate}>{format(new Date(item.date), 'MMMM d, yyyy')}</Text>
         <Text style={styles.eventText}>{item.event}</Text>
       </View>
     </View>
@@ -36,7 +38,7 @@ const TimeLineScreen = () => {
       <Text style={styles.title}>My Timeline</Text>
       <FlatList
         data={timelineData}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderTimelineItem}
         contentContainerStyle={styles.timelineContainer}
       />
