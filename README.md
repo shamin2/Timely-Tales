@@ -12,7 +12,7 @@ The primary objectives of **Timely Tales** are to:
 
 - **📝 Simplify Personal Management**: Provide a single platform to manage tasks, goals, habits, diary entries, and academic schedules.
 - **📈 Enhance Personal Growth**: Offer tools like mood tracking, goal setting, habit monitoring, and gratitude journaling to foster personal and professional development.
-- **🔒 Ensure Seamless Experience**: Leverage JWT-based authentication for security and provide real-time notifications to keep users engaged and organized.
+- **🔒 Ensure Seamless Experience**: Leverage JWT-based authentication for security purpose and provide real-time notifications to keep users engaged and organized.
 - **💡 Promote Well-being and Productivity**: Help users reflect on their progress, mood, and habits to improve mental clarity and productivity.
 
 ---
