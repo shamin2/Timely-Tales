@@ -1,6 +1,6 @@
 # 📖 Timely Tales (In Progress)
 
-**Timely Tales** is a sophisticated, full-stack life management platform designed to provide users with an all-encompassing solution to track personal growth, daily responsibilities, academic schedules, and well-being. This application seamlessly integrates key lifestyle functionalities into one platform, making it an essential tool for individuals aiming to organize, monitor, and enhance their personal and professional lives.
+**Timely Tales** is a full-stack life management platform designed to provide users with an all-encompassing solution to track personal growth, daily responsibilities, academic schedules, and well-being. This application seamlessly integrates key lifestyle functionalities into one platform, making it an essential tool for individuals aiming to organize, monitor, and enhance their personal and professional lives.
 
 ---
 
